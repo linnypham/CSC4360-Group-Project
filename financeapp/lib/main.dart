@@ -83,6 +83,61 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     }
   }
 
+  void editTransaction(String id, double amount, String category) {
+    amountController.text = amount.toString();
+    selectedCategory = category;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Edit Transaction'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: amountController,
+              decoration: InputDecoration(labelText: 'Amount'),
+              keyboardType: TextInputType.number,
+            ),
+            DropdownButton<String>(
+              value: selectedCategory,
+              items: ['Food', 'Rent', 'Entertainment', 'Others']
+                  .map((category) => DropdownMenuItem(
+                        value: category,
+                        child: Text(category),
+                      ))
+                  .toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedCategory = value!;
+                });
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              await _firestore.collection('transactions').doc(id).update({
+                'amount': double.parse(amountController.text),
+                'category': selectedCategory,
+              });
+              Navigator.pop(context);
+            },
+            child: Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void deleteTransaction(String id) async {
+    await _firestore.collection('transactions').doc(id).delete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -136,6 +191,19 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                   return ListTile(
                     title: Text('Amount: \$${data['amount']}'),
                     subtitle: Text('Category: ${data['category']}'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () => editTransaction(doc.id, data['amount'], data['category']),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () => deleteTransaction(doc.id),
+                        ),
+                      ],
+                    ),
                   );
                 }).toList(),
               );
@@ -150,13 +218,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 class GoalsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Goals !', style: TextStyle(fontSize: 24)));
+    return Center(child: Text('Goals - Coming Soon!', style: TextStyle(fontSize: 24)));
   }
 }
 
 class ReportsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Reports', style: TextStyle(fontSize: 24)));
+    return Center(child: Text('Reports - Coming Soon!', style: TextStyle(fontSize: 24)));
   }
 }
