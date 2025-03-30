@@ -187,10 +187,15 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               }
               return ListView(
                 children: snapshot.data!.docs.map((doc) {
-                  Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
+                  Map? data = doc.data() as Map?;
                   if (data == null) return SizedBox.shrink();
                   return ListTile(
-                    title: Text('Amount: \$${data['amount']}'),
+                    title: Text(
+                      'Amount: \$${data['amount']}',
+                      style: TextStyle(
+                        color: data['category'] == 'Deposit' ? Colors.green : Colors.black,
+                      ),
+                    ),
                     subtitle: Text('Category: ${data['category']}'),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -208,6 +213,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                   );
                 }).toList(),
               );
+
             },
           ),
         ),
@@ -254,7 +260,7 @@ class ReportsScreen extends StatelessWidget {
 
         double income = snapshot.data!['Income']!;
         double expenses = snapshot.data!['Expenses']!;
-
+        double total = income - expenses;
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -300,6 +306,14 @@ class ReportsScreen extends StatelessWidget {
                     ),
                     borderData: FlBorderData(show: false),
                   ),
+                ),
+              ),
+              Text(
+                'Net Amount: ${total}',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: total >= 0 ? Colors.green : Colors.red, // Green for positive, red for negative
                 ),
               ),
             ],
