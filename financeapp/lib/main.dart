@@ -100,7 +100,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             ),
             DropdownButton<String>(
               value: selectedCategory,
-              items: ['Food', 'Rent', 'Entertainment', 'Others']
+              items: ['Deposit','Food', 'Rent', 'Entertainment', 'Others']
                   .map((category) => DropdownMenuItem(
                         value: category,
                         child: Text(category),
@@ -155,7 +155,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               ),
               DropdownButton<String>(
                 value: selectedCategory,
-                items: ['Food', 'Rent', 'Entertainment', 'Others']
+                items: ['Deposit','Food', 'Rent', 'Entertainment', 'Others']
                     .map((category) => DropdownMenuItem(
                           value: category,
                           child: Text(category),
