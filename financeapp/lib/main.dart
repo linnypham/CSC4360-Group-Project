@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,7 +67,7 @@ class TransactionsScreen extends StatefulWidget {
 class _TransactionsScreenState extends State<TransactionsScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController amountController = TextEditingController();
-  String selectedCategory = 'Food';
+  String selectedCategory = 'Deposit';
 
   void saveTransaction() async {
     if (amountController.text.isEmpty) return;
@@ -223,8 +224,88 @@ class GoalsScreen extends StatelessWidget {
 }
 
 class ReportsScreen extends StatelessWidget {
+  Future<Map<String, double>> fetchData() async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    double income = 0;
+    double expenses = 0;
+
+    final querySnapshot = await firestore.collection('transactions').get();
+    for (var doc in querySnapshot.docs) {
+      var data = doc.data();
+      double amount = (data['amount'] as num).toDouble();
+      if (data['category'] == 'Deposit') {
+        income += amount;
+      } else {
+        expenses += amount;
+      }
+    }
+
+    return {'Income': income, 'Expenses': expenses};
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Reports - Coming Soon!', style: TextStyle(fontSize: 24)));
+    return FutureBuilder<Map<String, double>>(
+      future: fetchData(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        double income = snapshot.data!['Income']!;
+        double expenses = snapshot.data!['Expenses']!;
+
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Text(
+                'Income vs. Expenses',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 20),
+              SizedBox(
+                height: 300,
+                child: BarChart(
+                  BarChartData(
+                    barGroups: [
+                      BarChartGroupData(
+                        x: 0,
+                        barRods: [BarChartRodData(toY: income, color: Colors.green)],
+                        showingTooltipIndicators: [0],
+                      ),
+                      BarChartGroupData(
+                        x: 1,
+                        barRods: [BarChartRodData(toY: expenses, color: Colors.red)],
+                        showingTooltipIndicators: [0],
+                      ),
+                    ],
+                    titlesData: FlTitlesData(
+                      leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (value, meta) {
+                            switch (value.toInt()) {
+                              case 0:
+                                return Text('Income');
+                              case 1:
+                                return Text('Expenses');
+                              default:
+                                return Text('');
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                    borderData: FlBorderData(show: false),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
