@@ -1,0 +1,1 @@
+C:\Users\Linny\Documents\GitHub\CSC4360-Group-Project\financeapp\build\app\intermediates\cxx\RelWithDebInfo\4g2m6u5o\obj\arm64-v8a

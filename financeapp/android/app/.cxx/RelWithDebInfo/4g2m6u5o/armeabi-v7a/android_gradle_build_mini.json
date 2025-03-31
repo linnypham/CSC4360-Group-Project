@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "C:\\Users\\Linny\\Documents\\flutter\\packages\\flutter_tools\\gradle\\src\\main\\groovy\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\Linny\\AppData\\Local\\Android\\sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "C:\\Users\\Linny\\Documents\\GitHub\\CSC4360-Group-Project\\financeapp\\android\\app\\.cxx\\RelWithDebInfo\\4g2m6u5o\\armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\Linny\\AppData\\Local\\Android\\sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "C:\\Users\\Linny\\Documents\\GitHub\\CSC4360-Group-Project\\financeapp\\android\\app\\.cxx\\RelWithDebInfo\\4g2m6u5o\\armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}
