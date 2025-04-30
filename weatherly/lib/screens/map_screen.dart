@@ -79,8 +79,8 @@ class _MapScreenState extends State<MapScreen> {
       body: FlutterMap(
         mapController: _mapController,
         options: MapOptions(
-          center: _currentLocation,
-          zoom: 10.0,
+          initialCenter: _currentLocation!,
+          initialZoom: 10.0,
         ),
         children: [
           TileLayer(
@@ -98,7 +98,7 @@ class _MapScreenState extends State<MapScreen> {
                   point: _currentLocation!,
                   width: 40,
                   height: 40,
-                  builder: (ctx) => Icon(
+                  child: Icon(
                     Icons.location_on,
                     color: theme.primaryColor,
                     size: 40,

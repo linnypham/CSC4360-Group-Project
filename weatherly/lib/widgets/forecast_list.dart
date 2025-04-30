@@ -42,7 +42,10 @@ class HourlyForecastList extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final weather = hourly[index];
                   final temp = settings.convertTemperature(weather.temperature);
-                  return HourlyForecastItem(weather: weather, temp: temp);
+                  return HourlyForecastItem(
+                    weather: weather,
+                    temp: temp.toStringAsFixed(1),
+                  );
                 },
               ),
             ),
@@ -115,7 +118,10 @@ class DailyForecastList extends StatelessWidget {
             ),
             ...forecast.daily.map((weather) {
               final temp = settings.convertTemperature(weather.temperature);
-              return DailyForecastItem(weather: weather, temp: temp);
+              return DailyForecastItem(
+                weather: weather,
+                temp: temp.toStringAsFixed(1),
+              );
             }),
           ],
         ),

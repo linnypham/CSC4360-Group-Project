@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:weatherly/models/community_model.dart';
 import 'package:weatherly/providers/auth_provider.dart';
 import 'package:weatherly/widgets/community_post.dart';
+import 'package:weatherly/providers/weather_provider.dart';
 
 class CommunityScreen extends StatefulWidget {
   const CommunityScreen({super.key});
