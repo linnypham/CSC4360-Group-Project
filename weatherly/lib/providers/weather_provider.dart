@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weatherly/models/weather_model.dart';
-import 'package:weatherly/services/firebase_service.dart';
 import 'package:weatherly/services/weather_service.dart';
+import 'package:weatherly/services/firebase_service.dart';
 
 class WeatherProvider with ChangeNotifier {
   final WeatherService _weatherService;

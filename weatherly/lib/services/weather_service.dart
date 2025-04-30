@@ -16,7 +16,7 @@ class WeatherService {
     if (response.statusCode == 200) {
       return WeatherData.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Failed to load weather data');
+      throw Exception('Failed to load weather data: ${response.statusCode}');
     }
   }
 
@@ -28,7 +28,19 @@ class WeatherService {
     if (response.statusCode == 200) {
       return Forecast.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Failed to load forecast data');
+      throw Exception('Failed to load forecast data: ${response.statusCode}');
     }
+  }
+
+  Future<String> getCityName(double lat, double lon) async {
+    final response = await http.get(
+      Uri.parse('$_baseUrl/weather?lat=$lat&lon=$lon&appid=$apiKey'),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['name'] ?? 'Unknown Location';
+    }
+    return 'Unknown Location';
   }
 }
