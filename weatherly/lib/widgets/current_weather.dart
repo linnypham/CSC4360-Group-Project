@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:weatherly/providers/settings_provider.dart';
 import 'package:weatherly/providers/weather_provider.dart';
 import 'package:weatherly/utils/weather_icons.dart';
 
@@ -9,10 +10,15 @@ class CurrentWeatherWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final weather = context.watch<WeatherProvider>().currentWeather;
+    final settings = context.watch<SettingsProvider>();
     
     if (weather == null) {
       return const Center(child: CircularProgressIndicator());
     }
+
+    final temp = settings.convertTemperature(weather.temperature);
+    final feelsLike = settings.convertTemperature(weather.feelsLike);
+    final unit = settings.temperatureUnitSymbol;
 
     return Card(
       child: Padding(
@@ -26,7 +32,7 @@ class CurrentWeatherWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${weather.temperature.round()}°',
+                      '$temp$unit',
                       style: const TextStyle(fontSize: 48),
                     ),
                     Text(
@@ -45,7 +51,7 @@ class CurrentWeatherWidget extends StatelessWidget {
                 WeatherDetail(
                   icon: Icons.thermostat,
                   label: 'Feels like',
-                  value: '${weather.feelsLike.round()}°',
+                  value: '$feelsLike$unit',
                 ),
                 WeatherDetail(
                   icon: Icons.water,

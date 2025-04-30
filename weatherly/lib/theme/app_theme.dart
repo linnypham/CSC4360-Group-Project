@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
+  // Light theme (default sunny theme)
   static final ThemeData lightTheme = ThemeData(
     primarySwatch: _createMaterialColor(const Color(0xFF4285F4)),
     brightness: Brightness.light,
@@ -29,6 +30,7 @@ class AppTheme {
     ),
   );
 
+  // Dark theme (default night theme)
   static final ThemeData darkTheme = ThemeData(
     primarySwatch: _createMaterialColor(const Color(0xFF8AB4F8)),
     brightness: Brightness.dark,
@@ -57,39 +59,7 @@ class AppTheme {
     ),
   );
 
-  static ThemeData getRainyTheme(bool isDark) {
-    final base = isDark ? darkTheme : lightTheme;
-    return base.copyWith(
-      primaryColor: isDark ? const Color(0xFF5E97F6) : const Color(0xFF1976D2),
-      scaffoldBackgroundColor: isDark ? const Color(0xFF0A0E21) : const Color(0xFFE3F2FD),
-      cardTheme: base.cardTheme.copyWith(
-        color: isDark ? const Color(0xFF1A237E) : const Color(0xFFBBDEFB),
-      ),
-    );
-  }
-
-  static ThemeData getSnowyTheme(bool isDark) {
-    final base = isDark ? darkTheme : lightTheme;
-    return base.copyWith(
-      primaryColor: isDark ? const Color(0xFF80DEEA) : const Color(0xFF00ACC1),
-      scaffoldBackgroundColor: isDark ? const Color(0xFF000A12) : const Color(0xFFE0F7FA),
-      cardTheme: base.cardTheme.copyWith(
-        color: isDark ? const Color(0xFF263238) : const Color(0xFFB2EBF2),
-      ),
-    );
-  }
-
-  static ThemeData getSunnyTheme(bool isDark) {
-    final base = isDark ? darkTheme : lightTheme;
-    return base.copyWith(
-      primaryColor: isDark ? const Color(0xFFFFD54F) : const Color(0xFFFFA000),
-      scaffoldBackgroundColor: isDark ? const Color(0xFF1A1A00) : const Color(0xFFFFF8E1),
-      cardTheme: base.cardTheme.copyWith(
-        color: isDark ? const Color(0xFF424242) : const Color(0xFFFFECB3),
-      ),
-    );
-  }
-
+  // Helper to create MaterialColor from Color
   static MaterialColor _createMaterialColor(Color color) {
     final strengths = <double>[.05];
     final swatch = <int, Color>{};
@@ -110,27 +80,5 @@ class AppTheme {
     }
 
     return MaterialColor(color.value, swatch);
-  }
-
-  static ThemeData getThemeForWeather(String condition, bool isDark) {
-    switch (condition.toLowerCase()) {
-      case 'rain':
-      case 'drizzle':
-        return getRainyTheme(isDark);
-      case 'snow':
-        return getSnowyTheme(isDark);
-      case 'clear':
-        return getSunnyTheme(isDark);
-      case 'clouds':
-        return isDark 
-          ? darkTheme.copyWith(primaryColor: const Color(0xFF9E9E9E))
-          : lightTheme.copyWith(primaryColor: const Color(0xFF757575));
-      case 'thunderstorm':
-        return isDark
-          ? darkTheme.copyWith(primaryColor: const Color(0xFF7B1FA2))
-          : lightTheme.copyWith(primaryColor: const Color(0xFF9C27B0));
-      default:
-        return isDark ? darkTheme : lightTheme;
-    }
   }
 }
