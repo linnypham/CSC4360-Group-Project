@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weatherly/providers/weather_provider.dart';
+import 'package:weatherly/screens/community_screen.dart';
+import 'package:weatherly/screens/map_screen.dart';
+import 'package:weatherly/screens/settings_screen.dart';
 import 'package:weatherly/widgets/current_weather.dart';
 import 'package:weatherly/widgets/forecast_list.dart';
 import 'package:weatherly/widgets/weather_loading.dart';
@@ -23,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadInitialData() async {
     final weatherProvider = Provider.of<WeatherProvider>(context, listen: false);
-    await weatherProvider.fetchWeather(33.7501, -84.3885); 
+    await weatherProvider.fetchWeather(33.7501, -84.3885); // Default to ATL
     if (mounted) {
       setState(() => _isInitialLoad = false);
     }
@@ -43,9 +46,20 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Weatherly'),
         actions: [
+          // Map Button
           IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _refreshData,
+            icon: const Icon(Icons.map),
+            onPressed: () => _navigateTo(MapScreen()),
+          ),
+          // Community Button
+          IconButton(
+            icon: const Icon(Icons.people),
+            onPressed: () => _navigateTo(const CommunityScreen()),
+          ),
+          // Settings Button
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () => _navigateTo(const SettingsScreen()),
           ),
         ],
       ),
@@ -67,6 +81,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
+    );
+  }
+
+  void _navigateTo(Widget page) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => page),
     );
   }
 
