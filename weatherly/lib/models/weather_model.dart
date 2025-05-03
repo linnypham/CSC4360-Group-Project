@@ -1,3 +1,5 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 class WeatherData {
   final Location location;
   final double temperature;
@@ -55,6 +57,8 @@ class Location {
   final String city;
 
   Location({required this.lat, required this.lon, required this.city});
+
+  LatLng toLatLng() => LatLng(lat, lon);
 }
 
 class Forecast {

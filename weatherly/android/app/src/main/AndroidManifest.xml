@@ -1,8 +1,20 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.weatherly">
+    <!-- Add these permissions -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    
+    <!-- For Android 10+ background location if needed -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <application
-        android:label="weatherly"
-        android:name="${applicationName}"
+        android:label="Weatherly"
+        android:name="Weatherly"
         android:icon="@mipmap/ic_launcher">
+
+        <!-- TODO: Add your Google Maps API key here -->
+        <meta-data android:name="com.google.android.geo.AIzaSyCpx5CJA5SDzdzkZJCFF4HvXvmxs1H9Ork"
+               android:value="AIzaSyCpx5CJA5SDzdzkZJCFF4HvXvmxs1H9Ork"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -7,6 +7,7 @@ import 'package:weatherly/providers/auth_provider.dart';
 import 'package:weatherly/providers/settings_provider.dart';
 import 'package:weatherly/providers/weather_provider.dart';
 import 'package:weatherly/services/firebase_service.dart';
+import 'package:weatherly/services/location_service.dart';
 import 'package:weatherly/services/weather_service.dart';
 
 void main() async {
@@ -16,11 +17,13 @@ void main() async {
   );
   
   final firebaseService = FirebaseService();
-  final weatherService = WeatherService('YOUR_OPENWEATHERMAP_API_KEY');
+  final weatherService = WeatherService('AIzaSyCpx5CJA5SDzdzkZJCFF4HvXvmxs1H9Ork');
+  final locationService = LocationService();
   
   runApp(
     MultiProvider(
       providers: [
+        Provider(create: (_) => locationService),
         ChangeNotifierProvider(create: (_) => AuthProvider(firebaseService)),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
         ChangeNotifierProvider(

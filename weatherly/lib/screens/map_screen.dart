@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:weatherly/providers/weather_provider.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:weatherly/services/location_service.dart';
+import 'package:weatherly/models/weather_model.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -13,8 +14,9 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  final Completer<GoogleMapController> _controller = Completer();
-  LatLng? _currentLocation;
+  final Completer<GoogleMapController> _mapController = Completer();
+  final LocationService _locationService = LocationService();
+  LatLng? _currentPosition;
   Set<Marker> _markers = {};
   String _mapType = 'normal';
   bool _isLoading = true;
@@ -22,47 +24,38 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation();
+    _initMap();
   }
 
-  Future<void> _getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return;
+  Future<void> _initMap() async {
+    try {
+      final position = await _locationService.getCurrentPosition();
+      setState(() {
+        _currentPosition = LatLng(position.latitude, position.longitude);
+        _isLoading = false;
+      });
+      _addWeatherMarkers();
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
     }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return;
-      }
-    }
-
-    Position position = await Geolocator.getCurrentPosition();
-    setState(() {
-      _currentLocation = LatLng(position.latitude, position.longitude);
-      _isLoading = false;
-      _addMarkers();
-    });
-
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(
-      CameraUpdate.newLatLngZoom(_currentLocation!, 12),
-    );
   }
 
-  void _addMarkers() {
+  void _addWeatherMarkers() {
     final weather = context.read<WeatherProvider>().currentWeather;
-    if (weather != null && _currentLocation != null) {
+    if (weather != null && _currentPosition != null) {
       setState(() {
         _markers.add(
           Marker(
-            markerId: const MarkerId('current_location'),
-            position: _currentLocation!,
+            markerId: const MarkerId('current_weather'),
+            position: _currentPosition!,
             infoWindow: InfoWindow(
               title: weather.location.city,
-              snippet: '${weather.temperature.round()}°C, ${weather.condition}',
+              snippet: '${weather.temperature.round()}° | ${weather.condition}',
             ),
             icon: BitmapDescriptor.defaultMarkerWithHue(
               _getMarkerHue(weather.condition),
@@ -94,6 +87,17 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
+  Future<void> _goToCurrentLocation() async {
+    final position = await _locationService.getCurrentPosition();
+    final controller = await _mapController.future;
+    controller.animateCamera(
+      CameraUpdate.newLatLngZoom(
+        LatLng(position.latitude, position.longitude),
+        12,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -108,7 +112,7 @@ class _MapScreenState extends State<MapScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.my_location),
-            onPressed: _getCurrentLocation,
+            onPressed: _goToCurrentLocation,
           ),
           IconButton(
             icon: const Icon(Icons.layers),
@@ -119,12 +123,12 @@ class _MapScreenState extends State<MapScreen> {
       body: GoogleMap(
         mapType: _mapType == 'normal' ? MapType.normal : MapType.hybrid,
         initialCameraPosition: CameraPosition(
-          target: _currentLocation!,
+          target: _currentPosition ?? const LatLng(0, 0),
           zoom: 12,
         ),
         markers: _markers,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
+        onMapCreated: (controller) {
+          _mapController.complete(controller);
         },
         myLocationEnabled: true,
         myLocationButtonEnabled: false,
