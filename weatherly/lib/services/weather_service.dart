@@ -1,34 +1,31 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:weatherly/models/weather_model.dart';
 
 class WeatherService {
-  static const String _baseUrl = 'https://api.openweathermap.org/data/2.5';
-  final String apiKey;
+  final String apiKey = 'd0481087b5fe4c27ab0153437250305';
+  final String baseUrl = 'http://api.weatherapi.com/v1';
 
-  WeatherService(this.apiKey);
-
-  Future<WeatherData> getCurrentWeather(double lat, double lon) async {
+  Future<Map<String, dynamic>> fetchCurrentWeather(String location) async {
     final response = await http.get(
-      Uri.parse('$_baseUrl/weather?lat=$lat&lon=$lon&appid=$apiKey&units=metric'),
+      Uri.parse('$baseUrl/current.json?key=$apiKey&q=$location'),
     );
 
     if (response.statusCode == 200) {
-      return WeatherData.fromJson(jsonDecode(response.body));
+      return jsonDecode(response.body);
     } else {
       throw Exception('Failed to load weather data');
     }
   }
 
-  Future<Forecast> getForecast(double lat, double lon) async {
+  Future<Map<String, dynamic>> fetchForecast(String location) async {
     final response = await http.get(
-      Uri.parse('$_baseUrl/onecall?lat=$lat&lon=$lon&exclude=minutely&appid=$apiKey&units=metric'),
+      Uri.parse('$baseUrl/forecast.json?key=$apiKey&q=$location&days=7'),
     );
 
     if (response.statusCode == 200) {
-      return Forecast.fromJson(jsonDecode(response.body));
+      return jsonDecode(response.body);
     } else {
-      throw Exception('Failed to load forecast data');
+      throw Exception('Failed to load forecast');
     }
   }
 }

@@ -1,33 +1,45 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:weatherly/app.dart';
-import 'package:weatherly/firebase_options.dart';
-import 'package:weatherly/providers/auth_provider.dart';
-import 'package:weatherly/providers/settings_provider.dart';
-import 'package:weatherly/providers/weather_provider.dart';
-import 'package:weatherly/services/firebase_service.dart';
-import 'package:weatherly/services/weather_service.dart';
+import 'screens/splash_screen.dart';
+import 'utils/theme_manager.dart';
+import 'screens/onboarding_screen.dart';
+import 'screens/home_screen.dart';
+import 'screens/map_screen.dart';
+import 'screens/community_screen.dart';
+import 'screens/settings_screen.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  
-  final firebaseService = FirebaseService();
-  final weatherService = WeatherService('YOUR_OPENWEATHERMAP_API_KEY');
-  
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider(firebaseService)),
-        ChangeNotifierProvider(create: (_) => SettingsProvider()),
-        ChangeNotifierProvider(
-          create: (_) => WeatherProvider(weatherService, firebaseService),
-        ),
-      ],
-      child: const WeatherlyApp(),
-    ),
-  );
+void main() {
+  runApp(WeatherlyApp());
+}
+
+class WeatherlyApp extends StatefulWidget {
+  @override
+  State<WeatherlyApp> createState() => _WeatherlyAppState();
+}
+
+class _WeatherlyAppState extends State<WeatherlyApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  void _changeTheme(ThemeMode mode) {
+    setState(() {
+      _themeMode = mode;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Weatherly',
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: _themeMode,
+      debugShowCheckedModeBanner: false,
+      routes: {
+        '/': (context) => SplashScreen(onThemeChange: _changeTheme),
+        '/home': (context) => HomeScreen(),
+        '/map': (context) => MapScreen(),
+        '/community': (context) => CommunityScreen(),
+        '/settings': (context) => SettingsScreen(onThemeChange: _changeTheme),
+      },
+    );
+  }
 }
