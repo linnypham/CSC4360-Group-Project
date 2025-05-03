@@ -72,7 +72,7 @@ class _WeatherMapState extends State<WeatherMap> {
           ),
           TileLayer(
             urlTemplate:
-                'https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=YOUR_API_KEY',
+                'https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=d0481087b5fe4c27ab0153437250305',
           ),
           if (weather != null)
             MarkerLayer(

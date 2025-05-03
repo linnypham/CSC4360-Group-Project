@@ -16,7 +16,7 @@ void main() async {
   );
   
   final firebaseService = FirebaseService();
-  final weatherService = WeatherService('YOUR_OPENWEATHERMAP_API_KEY');
+  final weatherService = WeatherService('d0481087b5fe4c27ab0153437250305');
   
   runApp(
     MultiProvider(

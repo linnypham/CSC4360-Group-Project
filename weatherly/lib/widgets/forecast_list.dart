@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:weatherly/models/weather_model.dart';
-import 'package:weatherly/providers/settings_provider.dart';
 import 'package:weatherly/providers/weather_provider.dart';
 import 'package:weatherly/utils/weather_icons.dart';
 
@@ -12,23 +11,23 @@ class HourlyForecastList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final forecast = context.watch<WeatherProvider>().forecast;
-    final settings = context.watch<SettingsProvider>();
     
     if (forecast == null || forecast.hourly.isEmpty) {
       return const SizedBox.shrink();
     }
 
+    // Show next 12 hours forecast
     final hourly = forecast.hourly.take(12).toList();
 
     return Card(
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
                 'Hourly Forecast',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -41,11 +40,7 @@ class HourlyForecastList extends StatelessWidget {
                 itemCount: hourly.length,
                 itemBuilder: (context, index) {
                   final weather = hourly[index];
-                  final temp = settings.convertTemperature(weather.temperature);
-                  return HourlyForecastItem(
-                    weather: weather,
-                    temp: temp.toStringAsFixed(1),
-                  );
+                  return HourlyForecastItem(weather: weather);
                 },
               ),
             ),
@@ -58,18 +53,13 @@ class HourlyForecastList extends StatelessWidget {
 
 class HourlyForecastItem extends StatelessWidget {
   final WeatherData weather;
-  final String temp;
 
-  const HourlyForecastItem({
-    super.key,
-    required this.weather,
-    required this.temp,
-  });
+  const HourlyForecastItem({super.key, required this.weather});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -78,10 +68,10 @@ class HourlyForecastItem extends StatelessWidget {
             style: const TextStyle(fontSize: 12),
           ),
           const SizedBox(height: 4),
-          WeatherIcon(iconCode: weather.iconCode, size: 24),
+          WeatherIcon(iconCode: weather.iconCode, size: 32),
           const SizedBox(height: 4),
           Text(
-            temp,
+            '${weather.temperature.round()}°',
             style: const TextStyle(fontSize: 16),
           ),
         ],
@@ -96,33 +86,26 @@ class DailyForecastList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final forecast = context.watch<WeatherProvider>().forecast;
-    final settings = context.watch<SettingsProvider>();
     
     if (forecast == null || forecast.daily.isEmpty) {
       return const SizedBox.shrink();
     }
 
     return Card(
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
                 '7-Day Forecast',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
-            ...forecast.daily.map((weather) {
-              final temp = settings.convertTemperature(weather.temperature);
-              return DailyForecastItem(
-                weather: weather,
-                temp: temp.toStringAsFixed(1),
-              );
-            }),
+            ...forecast.daily.map((weather) => DailyForecastItem(weather: weather)),
           ],
         ),
       ),
@@ -132,18 +115,13 @@ class DailyForecastList extends StatelessWidget {
 
 class DailyForecastItem extends StatelessWidget {
   final WeatherData weather;
-  final String temp;
 
-  const DailyForecastItem({
-    super.key,
-    required this.weather,
-    required this.temp,
-  });
+  const DailyForecastItem({super.key, required this.weather});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       child: Row(
         children: [
           Expanded(
@@ -158,7 +136,7 @@ class DailyForecastItem extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              temp,
+              '${weather.temperature.round()}°',
               style: const TextStyle(fontSize: 14),
               textAlign: TextAlign.end,
             ),
