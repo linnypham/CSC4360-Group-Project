@@ -59,10 +59,6 @@ class SettingsScreen extends StatelessWidget {
             title: Text('Version'),
             subtitle: Text('1.0.0'),
           ),
-          ListTile(
-            title: const Text('Privacy Policy'),
-            onTap: () => _openPrivacyPolicy(context),
-          ),
         ],
       ),
     );
@@ -127,9 +123,5 @@ class SettingsScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  void _openPrivacyPolicy(BuildContext context) {
-    // Implement privacy policy navigation
   }
 }

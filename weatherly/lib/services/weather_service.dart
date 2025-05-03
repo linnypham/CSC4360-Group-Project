@@ -10,7 +10,7 @@ class WeatherService {
 
   Future<WeatherData> getCurrentWeather(double lat, double lon) async {
     final response = await http.get(
-      Uri.parse('$_baseUrl/current.json?key=$apiKey&q=$lat,$lon'),
+      Uri.parse('$_baseUrl/current.json?key=d0481087b5fe4c27ab0153437250305&q=$lat,$lon&api=no'),
     );
 
     if (response.statusCode == 200) {
@@ -22,7 +22,7 @@ class WeatherService {
 
   Future<Forecast> getForecast(double lat, double lon) async {
     final response = await http.get(
-      Uri.parse('$_baseUrl/forecast.json?key=$apiKey&q=$lat,$lon&days=7'),
+      Uri.parse('$_baseUrl/forecast.json?key=d0481087b5fe4c27ab0153437250305&q=$lat,$lon&days=7&api=no%alerts=yes'),
     );
 
     if (response.statusCode == 200) {
@@ -59,7 +59,7 @@ class WeatherService {
         .toList();
 
     return Forecast(
-      hourly: [], // weatherapi.com requires separate endpoint for hourly
+      hourly: [],
       daily: daily,
     );
   }
@@ -79,7 +79,6 @@ class WeatherService {
   }
 
   String _parseIconCode(String originalUrl) {
-    // Extract icon code from URL like "//cdn.weatherapi.com/weather/64x64/day/113.png"
     return originalUrl.split('/').last.split('.').first;
   }
 
